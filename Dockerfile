@@ -14,6 +14,9 @@ COPY . .
 
 # Create a .env file with build-time variables
 ARG GEMINI_API_KEY
+
+ENV GEMINI_API_KEY=${GEMINI_API_KEY}
+
 RUN echo "GEMINI_API_KEY=$GEMINI_API_KEY" > .env
 
 # Build the app
