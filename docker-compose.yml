@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # Development service for React app
+  dev:
+    build:
+      context: .
+      target: build
+      args:
+        GEMINI_API_KEY: AIzaSyDKnQadF23I7YNpbKXcIJS0EmMcX4JrqUg
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      GEMINI_API_KEY: AIzaSyDKnQadF23I7YNpbKXcIJS0EmMcX4JrqUg
+      BOT_TOKEN: 7918410282:AAGeO6XSDt3YVml1z39_K5mABMMa0uGqjfQ
+      API_ID: 23094796
+      API_HASH: 23fc6c59b556daf57e757c4956cf6fd4
+      DOMAIN: ai-checkers.vercel.app
+    command: npm run dev
+    depends_on:
+      - websocket
+    
+  # Production service for React app
+  prod:
+    build:
+      context: .
+      args:
+        GEMINI_API_KEY: AIzaSyDKnQadF23I7YNpbKXcIJS0EmMcX4JrqUg
+    ports:
+      - "80:80"
+    environment:
+      NODE_ENV: production
+      GEMINI_API_KEY: AIzaSyDKnQadF23I7YNpbKXcIJS0EmMcX4JrqUg
+      BOT_TOKEN: 7918410282:AAGeO6XSDt3YVml1z39_K5mABMMa0uGqjfQ
+      API_ID: 23094796
+      API_HASH: 23fc6c59b556daf57e757c4956cf6fd4
+      DOMAIN: ai-checkers.vercel.app
+    depends_on:
+      - websocket
+
+  # WebSocket server for Telegram Mini App
+  websocket:
+    build:
+      context: .
+      dockerfile: Dockerfile.websocket
+    ports:
+      - "2536:2536"
+    volumes:
+      - ./server:/app/server
+      - ./db:/app/db
+    environment:
+      BOT_TOKEN: 7918410282:AAGeO6XSDt3YVml1z39_K5mABMMa0uGqjfQ
+      API_ID: 23094796
+      API_HASH: 23fc6c59b556daf57e757c4956cf6fd4
+      DOMAIN: ai-checkers.vercel.app 
